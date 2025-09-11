@@ -1,0 +1,133 @@
+1) Layered view
+
+apps/           ← missions: patrols, alarms, docking
+ └─ patrol_manager   (BT/mission FSM)
+
+navigation/     ← Nav2 configs, costmaps, BTs, localization/SLAM
+perception/     ← lidar, camera, fusion, TF tree
+robot_drivers/  ← entry point to hardware or sim
+   ├─ sim_driver        (Gazebo/Isaac)
+   └─ unitree_driver    (Go2 Sport Mode)
+io/             ← operator UX: WebRTC video/mic, UI panel, logs
+bringup/        ← launch files and param profiles
+config/         ← shared parameters, frames, QoS
+test/           ← CI bags, regression tests
+
+Everything above robot_drivers is agnostic to sim vs. real.
+
+⸻
+
+2) Packages
+
+go2_patrol_ws/src/
+
+go2_robot_api/                        # stable API contracts
+  msgs/srv/                           # thin if custom needed
+
+go2_sim_driver/                       # backend A
+  nodes/sim_motion_node.cpp           # /cmd_vel → sim controller
+  nodes/sim_state_node.cpp            # publishes /odom, /imu
+  launch/sim_driver.launch.py
+
+go2_unitree_driver/                   # backend B
+  nodes/sport_cmd_node.cpp            # /cmd_vel → Sport client
+  nodes/sport_state_node.cpp          # /sportmodestate → /odom,/imu
+  services: stand/sit/estop
+  launch/unitree_driver.launch.py
+
+go2_perception/                       
+  nodes/lidar_node.cpp, camera_node.py
+  config/ekf.yaml, camera.yaml
+
+go2_navigation/                       
+  config/nav2/
+  launch/nav2.launch.py
+
+go2_apps_patrol/                      
+  nodes/patrol_manager.py
+  bt_xml/patrol_bt.xml
+  config/routes.yaml
+
+go2_io/                               
+  nodes/webrtc_video_bridge.py
+  nodes/tts_audio_bridge.py
+  web/ops_panel/
+
+go2_bringup/
+  launch/sim_bringup.launch.py
+  launch/robot_bringup.launch.py
+  params/common.yaml
+  params/profiles/
+
+
+⸻
+
+3) Contracts (topics & services)
+
+Always the same from the perspective of apps/navigation:
+	•	Inputs: /cmd_vel (geometry_msgs/Twist)
+	•	Services: /robot/stand, /robot/sit, /robot/estop
+	•	Outputs: /odom, /imu, /tf, /health
+	•	Sensors: /points (LiDAR), /camera/image_raw (+ /camera_info)
+
+Drivers implement them:
+	•	Sim driver: uses sim plugins to satisfy /odom, /imu, /points, /image_raw.
+	•	Unitree driver: uses Sport client (vx, vy, yaw, gait) to execute /cmd_vel; translates /sportmodestate into /odom, /imu, /health.
+
+⸻
+
+4) Launch flows
+
+Sim bringup
+
+ros2 launch go2_bringup sim_bringup.launch.py world:=office.sdf
+
+Robot bringup
+
+ros2 launch go2_bringup robot_bringup.launch.py profile:=field
+
+Both launches spin up:
+	•	driver (sim_driver or unitree_driver)
+	•	perception nodes (sim sensors or real drivers/WebRTC)
+	•	Nav2 stack
+	•	Patrol manager (BT mission logic)
+
+⸻
+
+5) Behavior layer
+	•	Patrol Manager: runs BTs (NavigateThroughPoses), handles alarms.
+	•	Routes YAML: defines waypoints, patrol loops, conditions.
+	•	FSM/BT: can preempt patrol to “investigate” or “return to charge.”
+
+⸻
+
+6) Perception paths
+	•	Sim: Gazebo/Isaac LiDAR & camera → ROS 2 topics.
+	•	Real:
+	•	LiDAR: Unitree L1/L2 SDK ROS 2 node → /points
+	•	Camera: WebRTC bridge → /camera/image_raw (or RealSense driver)
+	•	Fusion: robot_localization EKF, TF tree unified.
+
+⸻
+
+7) Safety
+	•	Watchdog: if /cmd_vel stale > 100 ms, zero velocities; after >N sec, auto stand.
+	•	E-stop: /robot/estop available in both drivers.
+	•	Health: battery, comms, gait mode published to /health.
+
+⸻
+
+8) Testing ladder
+	1.	Unit tests: API + BT XML checks.
+	2.	Sim smoke: spawn, teleop /cmd_vel, see /points in RViz.
+	3.	Nav2 sim: patrol route with NavigateThroughPoses.
+	4.	Robot dry-run: /sportmodestate echo, verify TF tree.
+	5.	Robot field test: stand → walk → patrol at capped speeds.
+	6.	Bags replay: regression checks on perception + Nav2 decisions.
+
+⸻
+
+9) Operator I/O (optional)
+	•	WebRTC bridges: video/audio to/from robot → ROS 2 topics.
+	•	Lights/LEDs: exposed as /headlight/set service via SDK.
+	•	Panel: simple web UI that talks to these ROS topics/services.
