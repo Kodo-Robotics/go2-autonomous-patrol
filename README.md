@@ -3,8 +3,6 @@
 Modular **ROS 2** framework for simulating and deploying **patrol behaviors** on the [Unitree Go2 quadruped](https://www.unitree.com/go2).  
 Designed to run in simulation first (Gazebo / Isaac), then transfer seamlessly to the **real robot** using Unitree’s **Sport Mode** SDK.
 
----
-
 ## ✨ Features
 
 - 🚶 **Patrol Missions**: Behavior Tree–based mission manager for routes, waypoints, and patrol loops.  
@@ -13,8 +11,6 @@ Designed to run in simulation first (Gazebo / Isaac), then transfer seamlessly t
 - 🔌 **Driver Swap**: Pluggable **simulation driver** and **hardware driver (Sport Mode)** with identical APIs.  
 - 🎥 **Operator I/O**: Optional WebRTC bridges for camera & audio.  
 - 🛡️ **Safety**: E-stop service, watchdog, health reporting.  
-
----
 
 ## 📂 Repository Layout
 
@@ -27,8 +23,6 @@ go2_unitree_driver/     # hardware backend (Sport Mode)
 go2_io/                 # WebRTC video/audio bridges
 go2_bringup/            # launch files, params, profiles
 config/                 # common params, frame defs
-
----
 
 ## 🏗️ Architecture
 
@@ -54,19 +48,17 @@ config/                 # common params, frame defs
    (LiDAR/Camera)     (Odom/IMU)
 ```
 
-•	Drivers expose the same ROS topics/services whether in sim or on hardware.
-•	Perception stack publishes /points, /camera/image_raw, /imu.
-•	Apps & Nav2 always talk to /cmd_vel, /odom, /tf, and patrol services.
-
-⸻
+* Drivers expose the same ROS topics/services whether in sim or on hardware.
+* Perception stack publishes /points, /camera/image_raw, /imu.
+* Apps & Nav2 always talk to /cmd_vel, /odom, /tf, and patrol services.
 
 ## 🚀 Getting Started
 
 Prerequisites
-	•	ROS 2 Humble or Jazzy
-	•	Colcon build tools
-	•	Gazebo (Fortress/Harmonic) or NVIDIA Isaac Sim (optional)
-	•	For hardware: Unitree unitree_ros2 and SDK2
+* ROS 2 Humble or Jazzy
+* Colcon build tools
+* Gazebo (Fortress/Harmonic) or NVIDIA Isaac Sim (optional)
+* For hardware: Unitree unitree_ros2 and SDK2
 
 ### Clone & Build
 
@@ -80,8 +72,6 @@ colcon build
 source install/setup.bash
 ```
 
-⸻
-
 ## 🎮 Simulation
 
 Launch full patrol stack in simulation:
@@ -90,11 +80,9 @@ Launch full patrol stack in simulation:
 ros2 launch go2_bringup sim_bringup.launch.py world:=warehouse.sdf
 ```
 
-•	Spawns Go2 in Gazebo.
-•	Starts perception, Nav2, patrol manager.
-•	RViz shows LiDAR & camera feeds.
-
-⸻
+* Spawns Go2 in Gazebo.
+* Starts perception, Nav2, patrol manager.
+* RViz shows LiDAR & camera feeds.
 
 ## 🤖 Real Robot (Sport Mode)
 
@@ -109,31 +97,27 @@ ros2 launch go2_bringup sim_bringup.launch.py world:=warehouse.sdf
   ros2 launch go2_bringup robot_bringup.launch.py profile:=field
   ```
 
-•	/cmd_vel → Sport Mode client (vx, vy, yaw, gait).
-•	/sportmodestate → bridged into /odom, /imu, /health.
-•	Optional WebRTC bridge publishes /camera/image_raw, /mic/audio.
-
-⸻
+* /cmd_vel → Sport Mode client (vx, vy, yaw, gait).
+* /sportmodestate → bridged into /odom, /imu, /health.
+* Optional WebRTC bridge publishes /camera/image_raw, /mic/audio.
 
 ## 📊 Topics & Services
 
 **Commands**
-	•	/cmd_vel (geometry_msgs/Twist)
+* /cmd_vel (geometry_msgs/Twist)
 
 **State**
-	•	/odom, /imu, /tf, /health
+* /odom, /imu, /tf, /health
 
 **Sensors**
-	•	/points (sensor_msgs/PointCloud2)
-	•	/camera/image_raw (sensor_msgs/Image)
-	•	/camera/camera_info
+* /points (sensor_msgs/PointCloud2)
+* /camera/image_raw (sensor_msgs/Image)
+* /camera/camera_info
 
 **Services**
-	•	/robot/stand
-	•	/robot/sit
-	•	/robot/estop
-
-⸻
+* /robot/stand
+* /robot/sit
+* /robot/estop
 
 ## 🧪 Testing Ladder
 
@@ -143,16 +127,13 @@ ros2 launch go2_bringup sim_bringup.launch.py world:=warehouse.sdf
 4.	Field test: Low-speed patrol route with watchdog enabled.
 5.	Regression: Replay bags in CI to validate perception & Nav2 decisions.
 
-⸻
-
 ## 📜 License
 
 This project is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)**.  
 See the [LICENSE](LICENSE) file for details.
 
-⸻
-
 ## 🙌 Acknowledgments
-•	Unitree Robotics for Go2 and SDK2.
-•	ROS 2 & Nav2 community.
-•	Contributors to simulation packages (Gazebo/Isaac).
+
+* Unitree Robotics for Go2 and SDK2.
+* ROS 2 & Nav2 community.
+* Contributors to simulation packages (Gazebo/Isaac).
