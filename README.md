@@ -14,6 +14,7 @@ Designed to run in simulation first (Gazebo / Isaac), then transfer seamlessly t
 
 ## 📂 Repository Layout
 
+```bash
 go2_patrol_ws/src/
 go2_apps_patrol/        # patrol manager (BTs, FSMs, routes)
 go2_navigation/         # Nav2 configs and launch
@@ -23,6 +24,7 @@ go2_unitree_driver/     # hardware backend (Sport Mode)
 go2_io/                 # WebRTC video/audio bridges
 go2_bringup/            # launch files, params, profiles
 config/                 # common params, frame defs
+```
 
 ## 🏗️ Architecture
 
