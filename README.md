@@ -1,141 +1,132 @@
-# go2_patrol_ros2
+# Unitree Go2 Autonomous Security Robot
 
-Modular **ROS 2** framework for simulating and deploying **patrol behaviors** on the [Unitree Go2 quadruped](https://www.unitree.com/go2).  
-Designed to run in simulation first (Gazebo / Isaac), then transfer seamlessly to the **real robot** using Unitree’s **Sport Mode** SDK.
+## Project Overview
+This project enhances the Unitree Go2 quadruped robot to function as an autonomous area security and monitoring platform. Using ROS 2 Humble, Nav2, and onboard sensors, the robot can patrol designated areas, monitor for activity, handle charging autonomously, and be controlled via a web-based dashboard.
 
-## ✨ Features
+**Key Capabilities:**
+- Autonomous patrol route execution
+- Obstacle-aware navigation
+- Live video streaming
+- Self-managed charging
+- Geofence enforcement and alerts
+- Deterrence features (audio and lights)
 
-- 🚶 **Patrol Missions**: Behavior Tree–based mission manager for routes, waypoints, and patrol loops.  
-- 🗺️ **Navigation**: Nav2 integration (planners, costmaps, BT XML).  
-- 👀 **Perception**: LiDAR + camera simulation plugins; EKF-based fusion with IMU/odom.  
-- 🔌 **Driver Swap**: Pluggable **simulation driver** and **hardware driver (Sport Mode)** with identical APIs.  
-- 🎥 **Operator I/O**: Optional WebRTC bridges for camera & audio.  
-- 🛡️ **Safety**: E-stop service, watchdog, health reporting.  
+## Features
 
-## 📂 Repository Layout
+### 1. Patrol Route Control
+- **Waypoint Definition:** Operators can define patrol paths through an interactive map in the web dashboard.
+- **Teach & Replay Mode:** Drive the robot manually along a route; system records the path for later autonomous repetition.
+- **Autonomous Patrol Execution:** Robot follows saved routes, with support for pause, resume, and stop commands from the dashboard.
+- **Dynamic Obstacle Handling:** Minor obstacles are avoided automatically; major obstructions are reported and rerouted if needed.
 
-```bash
-go2_patrol_ws/src/
-go2_apps_patrol/        # patrol manager (BTs, FSMs, routes)
-go2_navigation/         # Nav2 configs and launch
-go2_perception/         # lidar, camera, ekf, TF tree
-go2_sim_driver/         # simulation backend
-go2_unitree_driver/     # hardware backend (Sport Mode)
-go2_io/                 # WebRTC video/audio bridges
-go2_bringup/            # launch files, params, profiles
-config/                 # common params, frame defs
+### 2. Automatic Charging
+- **Battery Monitoring:** Robot continuously checks battery status and initiates charging when low.
+- **Docking Navigation:** Navigates to a charging station with precise final alignment using fiducial markers (e.g., AprilTags).
+- **Charging Feedback:** Confirms successful charging and resumes patrols or waits for operator commands after full charge.
+
+### 3. Monitoring & Video Dashboard
+- **Web Dashboard:**
+  - Displays robot location, patrol paths, and geofence zones.
+  - Shows robot diagnostics (battery, velocity, system health).
+  - Provides controls for starting/stopping patrols, returning to dock, and triggering deterrence.
+- **Live Video Feed:** Secure, low-latency stream from the front-facing camera.
+- **Object Detection:** Identifies people in real-time using a pre-trained YOLO model, with bounding boxes displayed on the dashboard.
+
+### 4. Deterrence Actions
+- **Audio Alerts:** Play preloaded sounds (dog bark, siren) or relay operator voice via the robot’s speaker.
+- **Lighting Controls:** Toggle built-in headlight remotely through the dashboard.
+
+### 5. Geofence Enforcement
+- **Boundary Setup:** Operators can draw polygonal safe zones on the dashboard.
+- **Alert Mechanism:** Robot stops motion and sends an immediate alert if it exits the defined area.
+
+## Technical Stack
+
+| Layer | Technology |
+|-------|------------|
+| Middleware | ROS 2 Humble |
+| Robot | Unitree Go2 EDU |
+| Navigation & Mapping | Nav2, SLAM Toolbox |
+| Computer Vision | OpenCV, PyTorch (YOLO) |
+| Web Frontend | React / Vue |
+| Web Backend | FastAPI / Node.js |
+| ROS-Web Bridge | ros2-web-bridge / WebSockets |
+| Docking Precision | AprilTags |
+
+## System Architecture
+
+```
+[patrol_controller] –> /NavigateToPose –> [Nav2]
+|
+v
+[geofence_monitor] –> /cmd_vel stop on breach
+|
+v
+[battery_monitor] –> triggers charging routine
+|
+v
+[docking_manager] –> Nav2 + AprilTag docking
+|
+v
+[vision_processor] –> /detections/person –> web dashboard
+|
+v
+[audio_controller, light_controller] –> dashboard commands
 ```
 
-## 🏗️ Architecture
+---
 
-```text
-          +----------------+
-          |   Applications |
-          |  (Patrol BTs)  |
-          +----------------+
-                  |
-                  v
-          +----------------+
-          |   Navigation   |
-          |    (Nav2)      |
-          +----------------+
-                  |
-        +--------------------+
-        |    Robot Driver    |
-        | (sim_driver OR     |
-        |  unitree_driver)   |
-        +--------------------+
-            /          \
-      Sensors           State
-   (LiDAR/Camera)     (Odom/IMU)
-```
+## Development Roadmap
 
-* Drivers expose the same ROS topics/services whether in sim or on hardware.
-* Perception stack publishes /points, /camera/image_raw, /imu.
-* Apps & Nav2 always talk to /cmd_vel, /odom, /tf, and patrol services.
+## Development Roadmap
 
-## 🚀 Getting Started
+| Phase | Tasks | Duration | Completed |
+|-------|-------|----------|-----------|
+| **Phase 1** | Environment Setup: ROS 2, Gazebo simulation, robot model, SLAM configuration | 1 week | [ ] |
+| **Phase 2** | Patrol & Navigation: Patrol node, waypoint management, Nav2 integration, obstacle handling | 2 weeks | [ ] |
+| **Phase 3** | Autonomous Charging: Battery monitoring, docking, fiducial alignment | 1 week | [ ] |
+| **Phase 4** | Video Monitoring & Dashboard: Camera streaming, web interface, object detection | 2 weeks | [ ] |
+| **Phase 5** | Deterrence & Geofence: Audio/light control, boundary enforcement | 1 week | [ ] |
+| **Phase 6** | Integration & Testing: End-to-end tests, debugging, demo preparation | 1–2 weeks | [ ] |
+| **Phase 7** | Documentation & Deployment: Setup guides, API docs, deployment scripts | 1 week | [ ] |
 
-Prerequisites
-* ROS 2 Humble or Jazzy
-* Colcon build tools
-* Gazebo (Fortress/Harmonic) or NVIDIA Isaac Sim (optional)
-* For hardware: Unitree unitree_ros2 and SDK2
+**Total Duration Estimate:** ~8–10 weeks
 
-### Clone & Build
-
+## Getting Started
+1. **Clone the Repository**
 ```bash
-mkdir -p go2_patrol_ws/src
-cd go2_patrol_ws/src
-git clone https://github.com/your-org/go2_patrol_ros2.git
-cd ..
-rosdep install --from-paths src -y --ignore-src
+git clone https://github.com/Kodo-Robotics/go2-autonomous-patrol
+cd go2-autonomous-patrol
+```
+2. **Install Dependencies**
+```bash
+rosdep install --from-paths src --ignore-src -y
 colcon build
 source install/setup.bash
 ```
 
-## 🎮 Simulation
-
-Launch full patrol stack in simulation:
-
+3. **Launch Simulation**
 ```bash
-ros2 launch go2_bringup sim_bringup.launch.py world:=warehouse.sdf
+ros2 launch launch/sim_launch.py
 ```
 
-* Spawns Go2 in Gazebo.
-* Starts perception, Nav2, patrol manager.
-* RViz shows LiDAR & camera feeds.
+4. **Start Mapping & Patrol**
+```bash
+ros2 launch launch/mapping_launch.py
+ros2 launch launch/nav_launch.py
+```
 
-## 🤖 Real Robot (Sport Mode)
+5. **Access Web Dashboard**
+   
+Open browser at http://127.0.0.1:6080 to monitor, define routes, and control the robot.
 
-1.	Source Unitree’s unitree_ros2:
-  ```bash
-  source ~/unitree_ros2/setup.sh
-  ```
+## Demo Highlights
+- Continuous autonomous patrols
+- Real-time video feed and person detection
+- Self-managed charging
+- Geofence alerts
+- Audio and lighting deterrence
 
-2.	Launch robot stack:
-
-  ```bash
-  ros2 launch go2_bringup robot_bringup.launch.py profile:=field
-  ```
-
-* /cmd_vel → Sport Mode client (vx, vy, yaw, gait).
-* /sportmodestate → bridged into /odom, /imu, /health.
-* Optional WebRTC bridge publishes /camera/image_raw, /mic/audio.
-
-## 📊 Topics & Services
-
-**Commands**
-* /cmd_vel (geometry_msgs/Twist)
-
-**State**
-* /odom, /imu, /tf, /health
-
-**Sensors**
-* /points (sensor_msgs/PointCloud2)
-* /camera/image_raw (sensor_msgs/Image)
-* /camera/camera_info
-
-**Services**
-* /robot/stand
-* /robot/sit
-* /robot/estop
-
-## 🧪 Testing Ladder
-
-1.	Sim smoke test: Spawn robot, teleop /cmd_vel, check sensors in RViz.
-2.	Nav2 sim: Run NavigateThroughPoses patrol on a map.
-3.	Dry-run robot (motors off): Verify /sportmodestate, TFs, topics.
-4.	Field test: Low-speed patrol route with watchdog enabled.
-5.	Regression: Replay bags in CI to validate perception & Nav2 decisions.
-
-## 📜 License
-
-This project is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)**.  
-See the [LICENSE](LICENSE) file for details.
-
-## 🙌 Acknowledgments
-
-* Unitree Robotics for Go2 and SDK2.
-* ROS 2 & Nav2 community.
-* Contributors to simulation packages (Gazebo/Isaac).
+## License & Contributions
+- Apache 2.0 License
+- Contributions welcome for improved UI, additional sensors, or new features.
