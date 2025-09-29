@@ -1,0 +1,16 @@
+bridges:
+  - topic: /cmd_vel
+    type: geometry_msgs/msg/Twist
+    ign_type: ignition.msgs.Twist
+  - topic: /odom
+    type: nav_msgs/msg/Odometry
+    ign_type: ignition.msgs.Odometry
+    remap: go2/odom
+  - topic: /joint_states
+    type: sensor_msgs/msg/JointState
+    ign_type: ignition.msgs.Model
+    remap: go2/joint_states
+  - topic: /scan
+    type: sensor_msgs/msg/LaserScan
+    ign_type: ignition.msgs.LaserScan
+    remap: go2/scan

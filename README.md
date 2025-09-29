@@ -1,7 +1,7 @@
 # Unitree Go2 Autonomous Security Robot
 
 ## Project Overview
-This project enhances the Unitree Go2 quadruped robot to function as an autonomous area security and monitoring platform. Using ROS 2 Humble, Nav2, and onboard sensors, the robot can patrol designated areas, monitor for activity, handle charging autonomously, and be controlled via a web-based dashboard.
+This project enhances the Unitree Go2 quadruped robot to function as an autonomous area security and monitoring platform. Using ROS 2 Jazzy, Nav2, and onboard sensors, the robot can patrol designated areas, monitor for activity, handle charging autonomously, and be controlled via a web-based dashboard.
 
 **Key Capabilities:**
 - Autonomous patrol route execution
@@ -44,7 +44,7 @@ This project enhances the Unitree Go2 quadruped robot to function as an autonomo
 
 | Layer | Technology |
 |-------|------------|
-| Middleware | ROS 2 Humble |
+| Middleware | ROS 2 Jazzy |
 | Robot | Unitree Go2 EDU |
 | Navigation & Mapping | Nav2, SLAM Toolbox |
 | Computer Vision | OpenCV, PyTorch (YOLO) |
