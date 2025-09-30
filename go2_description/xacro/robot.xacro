@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<robot name="go2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Macros -->
+    <xacro:include filename="$(find go2_description)/xacro/const.xacro"/>
+    <xacro:include filename="$(find go2_description)/xacro/leg.xacro"/>
+    <xacro:include filename="$(find go2_description)/xacro/gz.xacro"/>
+
+    <!-- Base Link -->
+    <link name="base_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="0.001 0.001 0.001"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <joint name="floating_base" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="trunk"/>
+    </joint>
+
+    <link name="trunk">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="file://$(find go2_description)/meshes/trunk.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${trunk_length} ${trunk_width} ${trunk_height}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${trunk_com_x} ${trunk_com_y} ${trunk_com_z}"/>
+            <mass value="${trunk_mass}"/>
+            <inertia
+                ixx="${trunk_ixx}" ixy="${trunk_ixy}" ixz="${trunk_ixz}"
+                iyy="${trunk_iyy}" iyz="${trunk_iyz}"
+                izz="${trunk_izz}"/>  
+        </inertial>
+    </link>
+
+    <!-- Legs -->
+    <xacro:leg name="rf" mirror="-1" mirror_dae= "False" front_hind="1"  front_hind_dae="True"/>
+    <xacro:leg name="lf" mirror="1"  mirror_dae="True"   front_hind="1"  front_hind_dae="True"/>
+    <xacro:leg name="rh" mirror="-1" mirror_dae="False"  front_hind="-1" front_hind_dae="False"/>
+    <xacro:leg name="lh" mirror="1"  mirror_dae="True"   front_hind="-1" front_hind_dae="False"/>
+
+    <!-- IMU -->
+    <link name="imu_frame"/>
+    <joint name="imu_joint" type="fixed">
+        <parent link="trunk"/>
+        <child link="imu_frame"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+    </joint>
+
+    <!-- 2D Lidar -->
+    <link name="two_d_lidar">
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder length="0.06" radius="0.075"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder length="0.06" radius="0.075"/>
+            </geometry>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1"/>
+            <xacro:cylinder_inertia m="0.1" r="0.075" h="0.06"/>
+        </inertial>
+    </link>
+    <joint name="two_d_lidar_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="two_d_lidar"/>
+        <origin xyz="0.2 0 0.08" rpy="0 0 0" />
+    </joint>
+
+    <!-- Camera -->
+    <link name="kinect_camera">
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.07 0.3 0.09"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find go2_description)/meshes/kinect/d415.dae"/>
+            </geometry>
+        </visual>
+        <inertial>
+            <mass value="0.01"/>
+            <xacro:box_inertia m="0.01" x="0.07" y="0.3" z = "0.09"/>
+        </inertial>
+    </link>
+    <joint name="kinect_camera_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="${trunk_length/2} 0 ${trunk_height/7}"/>
+        <parent link="base_link"/>
+        <child link="kinect_camera"/>
+    </joint>
+    <link name="kinect_camera_optical"/>
+    <joint name="kinect_camera_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+        <parent link="kinect_camera"/>
+        <child link="kinect_camera_optical"/>
+    </joint>
+
+</robot>

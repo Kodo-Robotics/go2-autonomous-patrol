@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
@@ -30,7 +31,7 @@ def generate_launch_description():
 
     robot_description_launch = PathJoinSubstitution([pkg_go2_description, "launch", 
                                                      "robot_description.launch.py"])
-    gz_bridge_yaml = PathJoinSubstitution([pkg_go2_simulation, "config", "ros_gz_bridge.yaml"])
+    gz_bridge_yaml = os.path.join(pkg_go2_simulation, "config", "ros_gz_bridge.yaml")
 
     robot_state_publisher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(robot_description_launch)
@@ -53,7 +54,11 @@ def generate_launch_description():
     gz_bridge = Node(
         package = "ros_gz_bridge",
         executable = "parameter_bridge",
-        parameters = [gz_bridge_yaml],
+        arguments = [
+            "--ros-args",
+            "-p",
+            f"config_file:={gz_bridge_yaml}"
+        ],
         output = "screen"
     )
     

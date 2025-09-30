@@ -30,7 +30,7 @@ def generate_launch_description():
                                       description = "Robot namespace")
     
     pkg_go2_description = get_package_share_directory("go2_description")
-    xacro_file = PathJoinSubstitution([pkg_go2_description, "urdf", "go2.urdf.xacro"])
+    xacro_file = PathJoinSubstitution([pkg_go2_description, "xacro", "robot.xacro"])
 
     robot_state_publisher = Node(
         package = "robot_state_publisher",

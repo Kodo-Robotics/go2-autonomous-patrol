@@ -1,16 +1,48 @@
-bridges:
-  - topic: /cmd_vel
-    type: geometry_msgs/msg/Twist
-    ign_type: ignition.msgs.Twist
-  - topic: /odom
-    type: nav_msgs/msg/Odometry
-    ign_type: ignition.msgs.Odometry
-    remap: go2/odom
-  - topic: /joint_states
-    type: sensor_msgs/msg/JointState
-    ign_type: ignition.msgs.Model
-    remap: go2/joint_states
-  - topic: /scan
-    type: sensor_msgs/msg/LaserScan
-    ign_type: ignition.msgs.LaserScan
-    remap: go2/scan
+# gz topic published by the simulator core
+- ros_topic_name: "clock"
+  gz_topic_name: "clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# gz topic published by JointState plugin
+- ros_topic_name: "go2/joint_states"
+  gz_topic_name: "joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+
+# gz topic published by DiffDrive plugin
+- ros_topic_name: "go2/odom"
+  gz_topic_name: "odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+# gz topic published by IMU plugin
+- ros_topic_name: "go2/imu"
+  gz_topic_name: "imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+# gz topic published by Sensors plugin
+- ros_topic_name: "go2/scan"
+  gz_topic_name: "scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+# gz topic published by Sensors plugin (Camera)
+- ros_topic_name: "go2/kinect_camera"
+  gz_topic_name: "kinect_camera"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+
+# gz topic published by Sensors plugin (Camera)
+- ros_topic_name: "go2/kinect_camera/points"
+  gz_topic_name: "kinect_camera/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "gz.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
