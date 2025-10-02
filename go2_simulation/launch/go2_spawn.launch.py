@@ -47,7 +47,7 @@ def generate_launch_description():
             "-x", LaunchConfiguration("position_x"),
             "-y", LaunchConfiguration("position_y"),
             "-Y", LaunchConfiguration("orientation_yaw"),
-            "-z", "0.4"
+            "-z", "0.3"
         ]
     )
 
