@@ -11,6 +11,9 @@
 
   <depend>ros_gz_sim</depend>
   <depend>ros_gz</depend>
+  <depend>ros2_controllers</depend>
+  <depend>gz_ros2_control</depend>
+  <depend>ros2_control</depend>
   <depend>launch</depend>
   <depend>launch_ros</depend>
   <depend>xacro</depend>

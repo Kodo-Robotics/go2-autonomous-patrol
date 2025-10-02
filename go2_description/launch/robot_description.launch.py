@@ -69,5 +69,5 @@ def generate_launch_description():
     ld.add_action(robot_name)
     ld.add_action(namespace)
     ld.add_action(robot_state_publisher)
-    ld.add_action(joint_state_publisher)
+    # ld.add_action(joint_state_publisher)
     return ld

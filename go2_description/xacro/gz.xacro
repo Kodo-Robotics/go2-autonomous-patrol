@@ -1,5 +1,13 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- ROS2 Control -->
+    <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>$(find go2_description)/config/ros_control.yaml</parameters>
+            <ros><remapping>/controller_manager/robot_description:=/robot_description</remapping></ros>
+        </plugin>
+    </gazebo>
+
     <!-- ........................... SENSOR PLUGIN ................................... -->
     <gazebo>
         <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">

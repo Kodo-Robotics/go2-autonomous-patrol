@@ -16,7 +16,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch_ros.actions import Node
@@ -47,7 +47,7 @@ def generate_launch_description():
             "-x", LaunchConfiguration("position_x"),
             "-y", LaunchConfiguration("position_y"),
             "-Y", LaunchConfiguration("orientation_yaw"),
-            "-z", "0.28"
+            "-z", "0.4"
         ]
     )
 
@@ -61,12 +61,31 @@ def generate_launch_description():
         ],
         output = "screen"
     )
+
+    joint_state_controller = ExecuteProcess(
+        cmd = ["ros2", "control", "load_controller", "--set-state", "active",
+               "joint_states_controller"],
+        output = "screen"
+    )
+    joint_trajectory_position_controller = ExecuteProcess(
+        cmd = ["ros2", "control", "load_controller", "--set-state", "active",
+               "joint_group_position_controller"],
+        output = "screen"
+    )
+    joint_trajectory_effort_controller = ExecuteProcess(
+        cmd = ["ros2", "control", "load_controller", "--set-state", "active",
+               "joint_group_effort_controller"],
+        output = "screen"
+    )
     
     ld = LaunchDescription()
     ld.add_action(position_x)
     ld.add_action(position_y)
     ld.add_action(orientation_yaw)
-    ld.add_action(robot_state_publisher)
+    # ld.add_action(robot_state_publisher)
     ld.add_action(spawn_go2)
     ld.add_action(gz_bridge)
+    ld.add_action(joint_state_controller)
+    # ld.add_action(joint_trajectory_position_controller)
+    ld.add_action(joint_trajectory_effort_controller)
     return ld

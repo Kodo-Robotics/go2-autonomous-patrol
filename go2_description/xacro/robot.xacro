@@ -6,16 +6,8 @@
     <xacro:include filename="$(find go2_description)/xacro/gz.xacro"/>
 
     <!-- Base Link -->
-    <link name="base_footprint"/>
     <link name="base_link"/>
-
-    <joint name="base_footprint_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="0 0 0.32"/>
-        <parent link="base_footprint"/>
-        <child link="base_link"/>
-    </joint>
-
-    <joint name="trunk_joint" type="fixed">
+    <joint name="floating_base" type="fixed">
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <parent link="base_link"/>
         <child link="trunk"/>

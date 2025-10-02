@@ -156,5 +156,28 @@
                     izz="${(2*foot_mass)/5.0*(foot_radius*foot_radius)}"/>             
             </inertial>
         </link>
+
+        <ros2_control name="${name}" type="system">
+            <hardware>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </hardware>
+            <joint name="${name}_hip_joint">
+                <command_interface name="effort"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+        
+            <joint name="${name}_upper_leg_joint">
+                <command_interface name="effort"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+        
+            <joint name="${name}_lower_leg_joint">
+                <command_interface name="effort"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+        </ros2_control>
     </xacro:macro>
 </robot>
