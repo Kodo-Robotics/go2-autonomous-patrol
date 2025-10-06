@@ -43,26 +43,26 @@
     <xacro:leg name="lh" mirror="1"  mirror_dae="True"   front_hind="-1" front_hind_dae="False"/>
 
     <!-- IMU -->
-    <link name="imu_frame"/>
+    <link name="imu_link"/>
     <joint name="imu_joint" type="fixed">
         <parent link="trunk"/>
-        <child link="imu_frame"/>
+        <child link="imu_link"/>
         <origin rpy="0 0 0" xyz="0 0 0"/>
     </joint>
 
-    <!-- 2D Lidar -->
-    <link name="two_d_lidar"/>
-    <joint name="two_d_lidar_joint" type="fixed">
+    <!-- Lidar -->
+    <link name="lidar_link"/>
+    <joint name="lidar_joint" type="fixed">
         <parent link="base_link"/>
-        <child link="two_d_lidar"/>
-        <origin xyz="0.28945 0 -0.046825" rpy="0 2.8782 0" />
+        <child link="lidar_link"/>
+        <origin xyz="0.225 0 0.105" rpy="0 0 0" />
     </joint>
 
     <!-- Camera -->
-    <link name="kinect_camera"/>
-    <joint name="kinect_camera_joint" type="fixed">
+    <link name="camera_link"/>
+    <joint name="camera_joint" type="fixed">
         <origin rpy="0 0 0" xyz="0.32715 -0.00003 0.04297"/>
         <parent link="base_link"/>
-        <child link="kinect_camera"/>
+        <child link="camera_link"/>
     </joint>
 </robot>

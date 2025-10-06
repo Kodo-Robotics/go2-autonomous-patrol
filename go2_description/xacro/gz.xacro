@@ -8,54 +8,52 @@
         </plugin>
     </gazebo>
 
-    <!-- ........................... SENSOR PLUGIN ................................... -->
+    <!-- Sensor Plugins -->
     <gazebo>
         <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
             <render_engine>ogre2</render_engine>
         </plugin>
-        <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu">
-        </plugin>
-        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
-        </plugin>
+        <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+        <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher"/>
     </gazebo>
 
-    <!-- ............................. ground truth .................................... -->
+    <!-- Odometry -->
     <gazebo>
         <plugin filename="libgz-sim-odometry-publisher-system"
             name="gz::sim::systems::OdometryPublisher">
             <odom_frame>odom</odom_frame>
-            <robot_base_frame>base_footprint</robot_base_frame>
-            <odom_topic>$(arg wheel_odom_topic)</odom_topic>
-            <tf_topic>/tf</tf_topic>
+            <robot_base_frame>base_link</robot_base_frame>
+            <odom_topic>odom</odom_topic>
+            <tf_topic>tf</tf_topic>
             <dimensions>2</dimensions>
             <odom_publish_frequency>10</odom_publish_frequency>
         </plugin>
     </gazebo>
 
-    <!-- ........................... 2D LIDAR config ................................... -->
-    <gazebo reference="two_d_lidar">
-        <sensor name='gpu_lidar' type='gpu_lidar'>
+    <!-- Lidar -->
+    <gazebo reference="lidar_link">
+        <sensor name="gpu_lidar" type="gpu_lidar">
             <topic>scan</topic>
-            <update_rate>${two_d_lidar_update_rate}</update_rate>
-            <gz_frame_id>two_d_lidar</gz_frame_id>
+            <update_rate>50</update_rate>
+            <gz_frame_id>lidar_link</gz_frame_id>
             <lidar>
                 <scan>
                     <horizontal>
-                        <samples>${two_d_lidar_sample_size}</samples>
+                        <samples>440</samples>
                         <resolution>1</resolution>
-                        <min_angle>${radians(two_d_lidar_min_angle)}</min_angle>
-                        <max_angle>${radians(two_d_lidar_max_angle)}</max_angle>
+                        <min_angle>-3.141592653589793</min_angle>
+                        <max_angle>3.141592653589793</max_angle>
                     </horizontal>
                 </scan>
                 <range>
-                    <min>${two_d_lidar_min_range}</min>
-                    <max>${two_d_lidar_max_range}</max>
+                    <min>0.3</min>
+                    <max>3.5</max>
                     <resolution>0.01</resolution>
                 </range>
                 <noise>
                     <type>gaussian</type>
                     <mean>0.0</mean>
-                    <stddev>0.001</stddev>
+                    <stddev>0.01</stddev>
                 </noise>
             </lidar>
             <always_on>1</always_on>
@@ -63,55 +61,41 @@
         </sensor>
     </gazebo>
 
-    <!-- ........................... CAMERA config ................................... -->
-    <gazebo reference="kinect_camera">
-        <sensor type="depth_camera" name="kinect_camera">
+    <!-- Camera -->
+    <gazebo reference="camera_link">
+        <sensor type="camera" name="camera">
             <update_rate>30.0</update_rate>
-            <topic>kinect_camera</topic>
-            <gz_frame_id>kinect_camera</gz_frame_id>
+            <topic>camera</topic>
+            <gz_frame_id>camera_link</gz_frame_id>
             <camera>
-                <camera_info_topic>kinect_camera/camera_info</camera_info_topic>
-                <horizontal_fov>${radians(camera_horizontal_fov)}</horizontal_fov>
+                <camera_info_topic>camera/camera_info</camera_info_topic>
                 <image>
                     <width>640</width>
                     <height>480</height>
                     <format>R8G8B8</format>
                 </image>
-                <clip>
-                    <near>0.05</near>
-                    <far>8.0</far>
-                </clip>
             </camera>
         </sensor>
     </gazebo>
 
-    <!-- ........................... IMU config ................................... -->
-    <gazebo reference="imu_frame">
+    <!-- IMU -->
+    <gazebo reference="imu_link">
         <sensor name="imu_sensor" type="imu">
             <always_on>1</always_on>
-            <update_rate>1</update_rate>
-            <gz_frame_id>imu_frame</gz_frame_id>
+            <update_rate>50</update_rate>
+            <frame_id>imu_frame</frame_id>
             <visualize>true</visualize>
-            <topic>imu</topic>
+            <topic>imu/data</topic>
         </sensor>
     </gazebo>
 
+    <!-- Physical Parameters -->
     <gazebo reference="trunk">
         <mu1>0.2</mu1>
         <mu2>0.2</mu2>
         <kp>10000.0</kp>
         <kd>0.5</kd>
     </gazebo>
-
-    <!-- <gazebo reference="stick_link">
-        <mu1>0.2</mu1>
-        <mu2>0.2</mu2>
-    </gazebo> -->
-
-    <!-- <gazebo reference="imu_link">
-        <mu1>0.2</mu1>
-        <mu2>0.2</mu2>
-    </gazebo> -->
 
     <!-- FL leg -->
     <gazebo reference="lf_hip_link">

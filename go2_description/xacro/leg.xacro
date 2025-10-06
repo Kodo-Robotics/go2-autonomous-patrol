@@ -129,7 +129,7 @@
             </inertial>
         </link>
 
-        <joint name="${name}_foot_joint" type="fixed">0
+        <joint name="${name}_foot_joint" type="fixed">
             <origin rpy="0 0 0" xyz="0 0 ${-(calf_length)}"/>
             <parent link="${name}_lower_leg_link"/>
             <child link="${name}_foot_link"/>
