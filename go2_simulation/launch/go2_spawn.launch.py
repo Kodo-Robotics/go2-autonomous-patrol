@@ -25,6 +25,8 @@ def generate_launch_description():
     position_x = DeclareLaunchArgument("position_x", default_value = "0.0")
     position_y = DeclareLaunchArgument("position_y", default_value = "0.0")
     orientation_yaw = DeclareLaunchArgument("orientation_yaw", default_value = "0.0")
+    use_sim_time = DeclareLaunchArgument("use_sim_time", default_value = "false", 
+                                         description = "Use simulation (Gazebo) clock if true")
 
     pkg_go2_description = get_package_share_directory("go2_description")
     pkg_go2_simulation = get_package_share_directory("go2_simulation")
@@ -34,7 +36,10 @@ def generate_launch_description():
     gz_bridge_yaml = os.path.join(pkg_go2_simulation, "config", "ros_gz_bridge.yaml")
 
     robot_state_publisher = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(robot_description_launch)
+        PythonLaunchDescriptionSource(robot_description_launch),
+        launch_arguments = {
+            "use_sim_time": LaunchConfiguration("use_sim_time")
+        }.items()
     )
 
     spawn_go2 = Node(
@@ -67,11 +72,6 @@ def generate_launch_description():
                "joint_states_controller"],
         output = "screen"
     )
-    joint_trajectory_position_controller = ExecuteProcess(
-        cmd = ["ros2", "control", "load_controller", "--set-state", "active",
-               "joint_group_position_controller"],
-        output = "screen"
-    )
     joint_trajectory_effort_controller = ExecuteProcess(
         cmd = ["ros2", "control", "load_controller", "--set-state", "active",
                "joint_group_effort_controller"],
@@ -82,10 +82,10 @@ def generate_launch_description():
     ld.add_action(position_x)
     ld.add_action(position_y)
     ld.add_action(orientation_yaw)
-    # ld.add_action(robot_state_publisher)
+    ld.add_action(use_sim_time)
+    ld.add_action(robot_state_publisher)
     ld.add_action(spawn_go2)
     ld.add_action(gz_bridge)
     ld.add_action(joint_state_controller)
-    # ld.add_action(joint_trajectory_position_controller)
     ld.add_action(joint_trajectory_effort_controller)
     return ld
