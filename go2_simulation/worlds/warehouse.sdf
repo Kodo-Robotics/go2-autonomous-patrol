@@ -9,7 +9,6 @@
     </physics>
 
     <gui fullscreen="0">
-
       <!-- 3D scene -->
       <plugin filename="GzScene3D" name="3D View">
         <ignition-gui>
@@ -47,8 +46,8 @@
         <collision name='collision'>
           <geometry>
             <plane>
-              <normal>0.0 0.0 1</normal>
-              <size>1 1</size>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
             </plane>
           </geometry>
         </collision>
@@ -62,11 +61,10 @@
         https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Warehouse
       </uri>
       <name>warehouse</name>
-      <pose>0 0 -0.09 0 0 0</pose>
+      <pose>0 0 -0.2 0 0 0</pose>
     </include>
 
     <!-- Carts -->
-
     <include>
       <uri>
         https://fuel.ignitionrobotics.org/1.0/MovAi/models/cart_model_2

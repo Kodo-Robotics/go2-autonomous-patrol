@@ -30,6 +30,7 @@ def generate_launch_description():
 
     pkg_go2_description = get_package_share_directory("go2_description")
     pkg_go2_simulation = get_package_share_directory("go2_simulation")
+    pkg_go2_controller = get_package_share_directory("go2_controller")
 
     robot_description_launch = PathJoinSubstitution([pkg_go2_description, "launch", 
                                                      "robot_description.launch.py"])
@@ -77,6 +78,17 @@ def generate_launch_description():
                "joint_group_effort_controller"],
         output = "screen"
     )
+
+    controller_launch = PathJoinSubstitution(
+        [pkg_go2_controller, "launch", "bringup.launch.py"]
+    )
+
+    controller_bringup = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(controller_launch),
+        launch_arguments = {
+            "use_sim_time": LaunchConfiguration("use_sim_time"),
+        }.items()
+    )
     
     ld = LaunchDescription()
     ld.add_action(position_x)
@@ -88,4 +100,5 @@ def generate_launch_description():
     ld.add_action(gz_bridge)
     ld.add_action(joint_state_controller)
     ld.add_action(joint_trajectory_effort_controller)
+    ld.add_action(controller_bringup)
     return ld

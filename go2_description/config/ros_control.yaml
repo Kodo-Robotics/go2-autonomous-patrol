@@ -1,7 +1,7 @@
 controller_manager:
   ros__parameters:
     use_sim_time: True
-    update_rate: 150  # Hz
+    update_rate: 100  # Hz
 
     joint_states_controller:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -32,18 +32,18 @@ joint_group_effort_controller:
       - velocity
     
     gains:
-      lf_hip_joint        : {p: 67.5, i: 0.2, d: 0.3}
-      lf_upper_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
-      lf_lower_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
-      rf_hip_joint        : {p: 67.5, i: 0.2, d: 0.3}
-      rf_upper_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
-      rf_lower_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
-      lh_hip_joint        : {p: 67.5, i: 0.2, d: 0.3}
-      lh_upper_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
-      lh_lower_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
-      rh_hip_joint        : {p: 67.5, i: 0.2, d: 0.3}
-      rh_upper_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
-      rh_lower_leg_joint  : {p: 67.5, i: 0.2, d: 0.3}
+      lf_hip_joint        : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      lf_upper_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      lf_lower_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      rf_hip_joint        : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      rf_upper_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      rf_lower_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      lh_hip_joint        : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      lh_upper_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      lh_lower_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      rh_hip_joint        : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      rh_upper_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
+      rh_lower_leg_joint  : {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
       
       # {p: 67.5, d: 0.3, i: 0.1, i_clamp: 1.5}
     # action_monitor_rate: 10.0 # Defaults to 20
